@@ -1,0 +1,56 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import statsmodels.api as sm
+from patsy import dmatrix
+
+# -----------------------------
+# Step 1: Simulate housing data
+# -----------------------------
+np.random.seed(42)
+n = 200
+
+# Generate square footage between 800 and 3500
+sqft = np.random.randint(800, 3500, n)
+
+# Generate nonlinear price relationship
+price = 50 * sqft + np.where(sqft > 2000, 200*(sqft-2000), 0) + np.random.normal(0, 50000, n)
+
+# Put into dataframe
+df = pd.DataFrame({"sqft": sqft, "price": price})
+
+# -----------------------------
+# Step 2: Create spline basis at knot = 2000
+# -----------------------------
+# Define spline with knot at 2000
+transformed_x = dmatrix("bs(df.sqft, knots=(2000,), degree=1, include_intercept=True)", 
+                        {"df.sqft": df.sqft}, return_type='dataframe')
+
+# Fit linear regression with spline basis
+model = sm.OLS(df.price, transformed_x).fit()
+
+print(model.summary())
+
+# -----------------------------
+# Step 3: Predictions
+# -----------------------------
+# Create grid for predictions
+x_grid = np.linspace(800, 3500, 200)
+x_basis = dmatrix("bs(x_grid, knots=(2000,), degree=1, include_intercept=True)", 
+                  {"x_grid": x_grid}, return_type='dataframe')
+
+y_pred = model.predict(x_basis)
+
+# -----------------------------
+# Step 4: Visualization
+# -----------------------------
+plt.figure(figsize=(10,6))
+plt.scatter(df.sqft, df.price, alpha=0.5, label="Observed Data")
+plt.plot(x_grid, y_pred, color="red", linewidth=2, label="Spline Regression Fit")
+plt.axvline(2000, color="green", linestyle="--", label="Knot at 2000 sqft")
+plt.xlabel("Square Footage")
+plt.ylabel("Housing Price")
+plt.title("Spline Regression: Housing Price vs Square Footage")
+plt.legend()
+plt.show()
+
