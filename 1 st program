@@ -1,0 +1,17 @@
+import numpy as np
+# Sample dataset: House prices in a city
+prices = [250000, 300000, 320000, 350000, 360000, 400000, 420000, 450000, 480000, 500000]
+# Calculate percentiles
+q1 = np.percentile(prices, 25)
+q3 = np.percentile(prices, 75)
+iqr = q3 - q1
+# Print results
+print("House Prices Dataset:", prices)
+print("Q1 (25th percentile):", q1)
+print("Q3 (75th percentile):", q3)
+print("Interquartile Range (IQR):", iqr)
+# Interpretation
+if iqr > 100000:	
+    print("The IQR is large — house prices have high variability.")
+else:
+    print("The IQR is small — house prices are relatively close in value.")
