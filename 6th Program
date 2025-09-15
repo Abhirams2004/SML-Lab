@@ -1,0 +1,28 @@
+import numpy as np
+from statsmodels.stats.proportion import proportions_ztest
+
+# Data
+n_A = 1000  # users shown version A
+sales_A = 120  # conversions in A
+
+n_B = 1200  # users shown version B
+sales_B = 150  # conversions in B
+
+# Number of successes (sales)
+successes = np.array([sales_A, sales_B])
+# Number of trials (users)
+trials = np.array([n_A, n_B])
+
+# Perform two-proportion z-test
+z_stat, p_value = proportions_ztest(successes, trials)
+
+print("Z-statistic:", z_stat)
+print("P-value:", p_value)
+
+# Conclusion
+alpha = 0.05
+if p_value < alpha:
+    print("Reject H0: Significant difference between conversion rates.")
+else:
+    print("Fail to reject H0: No significant difference between conversion rates.")
+
