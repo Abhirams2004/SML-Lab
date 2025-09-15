@@ -1,0 +1,46 @@
+import numpy as np
+from scipy import stats
+
+# Given data
+n = 20
+mean_sample = 8
+std_sample = 2
+alpha = 0.05
+
+# Calculate standard error
+SE = std_sample / np.sqrt(n)
+
+# t-statistic
+t_stat = (mean_sample - 0) / SE
+
+# Degrees of freedom
+df = n - 1
+
+# Critical t-value (two-tailed)
+t_crit = stats.t.ppf(1 - alpha/2, df)
+
+# p-value (two-tailed)
+p_value = 2 * (1 - stats.t.cdf(abs(t_stat), df))
+
+# Confidence interval
+CI_lower = mean_sample - t_crit * SE
+CI_upper = mean_sample + t_crit * SE
+
+# Display results
+print("One-Sample t-Test (Drug effect on heart rate)")
+print("-------------------------------------------------")
+print(f"Sample size (n)          : {n}")
+print(f"Sample mean              : {mean_sample}")
+print(f"Sample standard deviation: {std_sample}")
+print(f"Standard Error (SE)      : {SE:.4f}")
+print(f"t-statistic              : {t_stat:.4f}")
+print(f"Degrees of freedom (df)  : {df}")
+print(f"Critical t-value (±)     : {t_crit:.4f}")
+print(f"p-value                  : {p_value:.6f}")
+print(f"95% Confidence Interval  : ({CI_lower:.4f}, {CI_upper:.4f})")
+
+# Decision
+if abs(t_stat) > t_crit:
+    print("\nDecision: Reject H0 → Mean heart rate increase is significantly different from 0.")
+else:
+    print("\nDecision: Fail to reject H0 → No significant difference.")
