@@ -1,0 +1,113 @@
+
+10: A hospital is using a Poisson regression model (a type of GLM) to predict the number of emergency room visits per week based on patient age and medical history. The model is given by: Log(λ) =2.5-0.03*Age+0.5*condition where λ is the expected number of visits per week, Age is the patient's age, and condition is a binary variable (1 if the patient has a chronic condition, 0 otherwise). Interpret the coefficients of Age and condition. What is the expected number of visits per week for a 60-year-old patient with a chronic condition? How would the expected number of visits change if the patient did not have a chronic condition?
+
+import numpy as np
+
+# Poisson regression model parameters
+intercept = 2.5
+beta_age = -0.03
+beta_condition = 0.5
+
+def expected_visits(age, condition):
+    log_lambda = intercept + beta_age * age + beta_condition * condition
+    lam = np.exp(log_lambda)  # Convert from log(λ) to λ
+    return lam
+
+# Case 1: 60-year-old with chronic condition (condition=1)
+visits_with_condition = expected_visits(60, 1)
+
+# Case 2: 60-year-old without chronic condition (condition=0)
+visits_without_condition = expected_visits(60, 0)
+
+print("Expected visits (60 yrs, chronic condition):", visits_with_condition)
+print("Expected visits (60 yrs, no chronic condition):", visits_without_condition)
+print("Change in expected visits:", visits_with_condition - visits_without_condition)
+
+Output:
+Expected visits (60 yrs, chronic condition): 3.320116922736548
+Expected visits (60 yrs, no chronic condition): 2.013752707470477
+Change in expected visits: 1.306364215266071
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+11: A bakery claims that its new cookie recipe is lower in calories compared to the old recipe, which had a mean calorie count of 200. You sample 40 new cookies and find a mean of 190 calories with a standard deviation of 15 calories. Perform a one-tailed t-test to determine if the new recipe has significantly fewer calories at a 5% significance level.
+# One-sample one-tailed t-test
+
+import numpy as np
+from scipy import stats
+
+# Given data
+mu_old = 200   # population mean (old recipe)
+n = 40         # sample size
+sample_mean = 190
+sample_std = 15
+alpha = 0.05   # significance level
+
+# Step 1: Compute the t-statistic
+t_stat = (sample_mean - mu_old) / (sample_std / np.sqrt(n))
+
+# Step 2: Degrees of freedom
+df = n - 1
+
+# Step 3: Compute one-tailed p-value
+p_value = stats.t.cdf(t_stat, df=df)  # since it's left-tailed (mean < 200)
+
+# Step 4: Decision
+if p_value < alpha:
+    decision = "Reject the null hypothesis (New recipe has significantly fewer calories)."
+else:
+    decision = "Fail to reject the null hypothesis (No significant evidence)."
+
+# Output results
+print("One-Sample One-Tailed t-Test")
+print("-" * 50)
+print(f"Sample Size (n): {n}")
+print(f"Sample Mean: {sample_mean}")
+print(f"Sample Std Dev: {sample_std}")
+print(f"Hypothesized Mean: {mu_old}")
+print(f"t-statistic: {t_stat:.4f}")
+print(f"Degrees of Freedom: {df}")
+print(f"p-value: {p_value:.4f}")
+print(f"Significance Level (alpha): {alpha}")
+print("Conclusion:", decision)
+
+
+
+
+
+
+
+Output:
+
+One-Sample One-Tailed t-Test
+--------------------------------------------------
+Sample Size (n): 40
+Sample Mean: 190
+Sample Std Dev: 15
+Hypothesized Mean: 200
+t-statistic: -4.2164
+Degrees of Freedom: 39
+p-value: 0.0001
+Significance Level (alpha): 0.05
+Conclusion: Reject the null hypothesis (New recipe has significantly fewer calories).
+
+
+
+
+
